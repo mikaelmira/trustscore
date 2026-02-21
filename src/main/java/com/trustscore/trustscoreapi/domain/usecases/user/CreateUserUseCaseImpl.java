@@ -2,6 +2,8 @@ package com.trustscore.trustscoreapi.domain.usecases.user;
 
 import com.trustscore.trustscoreapi.domain.entities.User;
 import com.trustscore.trustscoreapi.domain.enums.UserStatus;
+import com.trustscore.trustscoreapi.domain.exceptions.CpfAlreadyExistsException;
+import com.trustscore.trustscoreapi.domain.exceptions.EmailAlreadyExistsException;
 import com.trustscore.trustscoreapi.domain.gateway.UserGateway;
 import com.trustscore.trustscoreapi.domain.utils.CpfHasher;
 import com.trustscore.trustscoreapi.domain.utils.PasswordHasher;
@@ -25,11 +27,11 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
     public User execute(User user) {
 
         if (gateway.existsByEmail(user.getEmail())) {
-            throw new RuntimeException();
+            throw new EmailAlreadyExistsException();
         }
 
         if (gateway.existsByCpf(user.getCpf().value())) {
-            throw new RuntimeException();
+            throw new CpfAlreadyExistsException();
         }
 
         String passwordHash = passwordHasher.hash(user.getPassword());

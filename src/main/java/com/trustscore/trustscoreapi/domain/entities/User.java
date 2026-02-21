@@ -29,7 +29,7 @@ public class User {
     private boolean mfaEnabled;
     private String mfaSecret;
     private UserStatus status;
-    private Instant createAt;
+    private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
 
@@ -53,7 +53,7 @@ public class User {
             boolean mfaEnabled,
             String mfaSecret,
             UserStatus status,
-            Instant createAt,
+            Instant createdAt,
             Instant updatedAt,
             Instant deletedAt
     ) {
@@ -73,7 +73,7 @@ public class User {
         this.mfaEnabled = mfaEnabled;
         this.mfaSecret = mfaSecret;
         this.status = status;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
     }
@@ -203,11 +203,11 @@ public class User {
     }
 
     public Instant getCreateAt() {
-        return createAt;
+        return createdAt;
     }
 
     public void setCreateAt(Instant createAt) {
-        this.createAt = createAt;
+        this.createdAt = createAt;
     }
 
     public Instant getUpdatedAt() {

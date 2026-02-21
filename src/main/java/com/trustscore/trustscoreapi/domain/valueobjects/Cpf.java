@@ -1,10 +1,12 @@
 package com.trustscore.trustscoreapi.domain.valueobjects;
 
+import com.trustscore.trustscoreapi.domain.exceptions.InvalidCpfException;
+
 public record Cpf(String value) {
 
     public Cpf(String value) {
         if (!isValid(value)) {
-            throw new IllegalArgumentException("CPF inválido");
+            throw new InvalidCpfException();
         }
         this.value = value.replaceAll("\\D", "");
     }
