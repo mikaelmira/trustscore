@@ -17,6 +17,7 @@ public class User {
     private String name;
     private String email;
     private Cpf cpf;
+    private String firstCpfDigits;
     private String password;
     private boolean emailVerified;
     private Instant emailVerifiedAt;
@@ -40,6 +41,7 @@ public class User {
             String name,
             String email,
             Cpf cpf,
+            String firstCpfDigits,
             String password,
             boolean emailVerified,
             Instant emailVerifiedAt,
@@ -59,6 +61,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.cpf = cpf;
+        this.firstCpfDigits = firstCpfDigits;
         this.password = password;
         this.emailVerified = emailVerified;
         this.emailVerifiedAt = emailVerifiedAt;
@@ -105,6 +108,14 @@ public class User {
 
     public void setCpf(Cpf cpf) {
         this.cpf = cpf;
+    }
+
+    public String getFirstCpfDigits() {
+        return firstCpfDigits;
+    }
+
+    public void setFirstCpfDigits(String firstCpfDigits) {
+        this.firstCpfDigits = firstCpfDigits;
     }
 
     public String getPassword() {

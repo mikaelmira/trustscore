@@ -36,11 +36,14 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
         Cpf cpfHash = cpfHasher.hash(user.getCpf().value());
 
+        String firstCpfDigits = user.getCpf().value().substring(0, 3);
+
         User userToBeCreated = new User(
                 null,
                 user.getName(),
                 user.getEmail(),
                 cpfHash,
+                firstCpfDigits,
                 passwordHash,
                 false,
                 null,
