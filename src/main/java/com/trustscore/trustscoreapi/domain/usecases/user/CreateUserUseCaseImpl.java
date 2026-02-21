@@ -30,13 +30,13 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
             throw new EmailAlreadyExistsException();
         }
 
-        if (gateway.existsByCpf(user.getCpf().value())) {
+        Cpf cpfHash = cpfHasher.hash(user.getCpf().value());
+
+        if (gateway.existsByCpf(cpfHash.value())) {
             throw new CpfAlreadyExistsException();
         }
 
         String passwordHash = passwordHasher.hash(user.getPassword());
-
-        Cpf cpfHash = cpfHasher.hash(user.getCpf().value());
 
         String firstCpfDigits = user.getCpf().value().substring(0, 3);
 
