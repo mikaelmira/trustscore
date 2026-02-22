@@ -1,30 +1,22 @@
 package com.trustscore.trustscoreapi.domain.valueobjects;
 
-import com.trustscore.trustscoreapi.domain.exceptions.InvalidCpfException;
-
 public record Cpf(String value) {
 
     public Cpf(String value) {
-        if (!isValid(value)) {
-            throw new InvalidCpfException();
-        }
-        this.value = value.replaceAll("\\D", "");
+        String normalized = value.replaceAll("\\D", "");
+        this.value = normalized;
     }
 
-    private boolean isValid(String cpf) {
-        if (cpf == null) return false;
-
-        cpf = cpf.replaceAll("\\D", "");
+    public boolean isValid() {
+        String cpf = this.value;
 
         if (cpf.length() != 11) return false;
-
         if (cpf.matches("(\\d)\\1{10}")) return false;
 
         int soma = 0;
         for (int i = 0; i < 9; i++) {
             soma += (cpf.charAt(i) - '0') * (10 - i);
         }
-
         int primeiroDigito = 11 - (soma % 11);
         if (primeiroDigito >= 10) primeiroDigito = 0;
 

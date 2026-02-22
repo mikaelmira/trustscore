@@ -4,6 +4,7 @@ import com.trustscore.trustscoreapi.domain.entities.User;
 import com.trustscore.trustscoreapi.domain.enums.UserStatus;
 import com.trustscore.trustscoreapi.domain.exceptions.CpfAlreadyExistsException;
 import com.trustscore.trustscoreapi.domain.exceptions.EmailAlreadyExistsException;
+import com.trustscore.trustscoreapi.domain.exceptions.InvalidCpfException;
 import com.trustscore.trustscoreapi.domain.gateway.UserGateway;
 import com.trustscore.trustscoreapi.domain.utils.CpfHasher;
 import com.trustscore.trustscoreapi.domain.utils.PasswordHasher;
@@ -25,6 +26,10 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
     @Override
     public User execute(User user) {
+
+        if (!user.getCpf().isValid()) {
+            throw new InvalidCpfException();
+        }
 
         if (gateway.existsByEmail(user.getEmail())) {
             throw new EmailAlreadyExistsException();

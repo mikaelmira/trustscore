@@ -12,14 +12,14 @@ import java.time.Instant;
 @Table(
         name = "users",
         indexes = {
-                @Index(name = "idx_users_email", columnList = "email"),
-                @Index(name = "idx_users_cpf", columnList = "cpf"),
-                @Index(name = "idx_users_status", columnList = "status"),
-                @Index(name = "idx_users_deleted_at", columnList = "deleted_at")
+                @Index(name = "idx_tb_user_email", columnList = "email"),
+                @Index(name = "idx_tb_user_cpf", columnList = "cpf"),
+                @Index(name = "idx_tb_user_status", columnList = "status"),
+                @Index(name = "idx_tb_user_deleted_at", columnList = "deleted_at")
         },
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
-                @UniqueConstraint(name = "uk_users_cpf", columnNames = "cpf")
+                @UniqueConstraint(name = "uk_tb_user_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_tb_user_cpf", columnNames = "cpf")
         }
 )
 @Data

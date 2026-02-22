@@ -202,11 +202,11 @@ public class User {
         this.status = status;
     }
 
-    public Instant getCreateAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreateAt(Instant createAt) {
+    public void setCreatedAt(Instant createAt) {
         this.createdAt = createAt;
     }
 
