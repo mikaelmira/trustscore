@@ -1,12 +1,12 @@
-package com.trustscore.trustscoreapi.domain.exceptions;
+package com.trustscore.trustscoreapi.infrastructure.exceptions;
 
 import com.trustscore.trustscoreapi.domain.enums.ErrorCode;
 
-public abstract class DomainException extends RuntimeException {
+public class InfrastructureException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    protected DomainException(String message, ErrorCode errorCode) {
+    protected InfrastructureException(String message, ErrorCode errorCode) {
         super(message);
         this.errorCode = errorCode;
     }

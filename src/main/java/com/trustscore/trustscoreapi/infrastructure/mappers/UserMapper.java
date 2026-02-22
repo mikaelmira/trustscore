@@ -1,6 +1,7 @@
 package com.trustscore.trustscoreapi.infrastructure.mappers;
 
 import com.trustscore.trustscoreapi.domain.entities.User;
+import com.trustscore.trustscoreapi.domain.valueobjects.Cpf;
 import com.trustscore.trustscoreapi.infrastructure.persistence.entities.UserJpaEntity;
 import org.mapstruct.Mapper;
 
@@ -8,4 +9,13 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
     User toDomain(UserJpaEntity jpaEntity);
     UserJpaEntity toJpaEntity(User domain);
+
+    default Cpf map(String value) {
+        if (value == null) return null;
+        return new Cpf(value);
+    }
+    default String map(Cpf cpf) {
+        if (cpf == null) return null;
+        return cpf.value();
+    }
 }

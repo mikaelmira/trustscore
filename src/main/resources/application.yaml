@@ -55,3 +55,7 @@ server:
   max-http-header-size: 8KB
   max-http-form-post-size: 2MB
   max-http-request-body-size: 10MB
+
+pepper:
+  secret: ${PEPPER_SECRET}
+  algorithm: ${PEPPER_ALGORITHM}
