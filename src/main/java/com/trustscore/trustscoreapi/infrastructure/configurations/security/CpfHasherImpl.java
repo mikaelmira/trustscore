@@ -2,51 +2,42 @@ package com.trustscore.trustscoreapi.infrastructure.configurations.security;
 
 import com.trustscore.trustscoreapi.domain.utils.CpfHasher;
 import com.trustscore.trustscoreapi.domain.valueobjects.Cpf;
-import com.trustscore.trustscoreapi.infrastructure.exceptions.CpfHashingErrorException;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 @Component
 public class CpfHasherImpl implements CpfHasher {
 
-    private final String secret;
-    private final String algorithm;
+    private final String pepper;
+    private final SecureRandom secureRandom = new SecureRandom();
 
-    public CpfHasherImpl(
-            @Value("${pepper.secret}") String secret,
-            @Value("${pepper.algorithm}") String algorithm
-    ) {
-        this.secret = secret;
-        this.algorithm = algorithm;
+    private static final int ITERATIONS = 4;
+    private static final int MEMORY = 65536;
+    private static final int PARALLELISM = 2;
+
+    public CpfHasherImpl(@Value("${pepper.secret}") String pepper) {
+        this.pepper = pepper;
     }
 
     @Override
     public Cpf hash(String rawCpf) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance(algorithm);
+        Argon2 argon2 = Argon2Factory.create();
 
-            String value = rawCpf + secret;
+        String valueToHash = rawCpf + pepper;
 
-            byte[] hashBytes = digest.digest(value.getBytes(StandardCharsets.UTF_8));
+        String hash = argon2.hash(ITERATIONS, MEMORY, PARALLELISM, valueToHash.toCharArray());
 
-            return new Cpf(bytesToHex(hashBytes));
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new CpfHashingErrorException();
-        }
+        return new Cpf(hash);
     }
 
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : bytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-        return hexString.toString();
+    @Override
+    public boolean verify(String rawCpf, String storedHash) {
+        Argon2 argon2 = Argon2Factory.create();
+        String valueToVerify = rawCpf + pepper;
+        return argon2.verify(storedHash, valueToVerify.toCharArray());
     }
 }

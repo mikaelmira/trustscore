@@ -3,12 +3,14 @@ package com.trustscore.trustscoreapi.domain.valueobjects;
 public record Cpf(String value) {
 
     public Cpf(String value) {
-        String normalized = value.replaceAll("\\D", "");
-        this.value = normalized;
+        this.value = value;
     }
 
     public boolean isValid() {
         String cpf = this.value;
+        if (cpf == null) return false;
+
+        cpf = cpf.replaceAll("\\D", "");
 
         if (cpf.length() != 11) return false;
         if (cpf.matches("(\\d)\\1{10}")) return false;
