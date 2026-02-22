@@ -4,11 +4,13 @@ import com.trustscore.trustscoreapi.domain.utils.CpfHasher;
 import com.trustscore.trustscoreapi.domain.valueobjects.Cpf;
 import com.trustscore.trustscoreapi.infrastructure.exceptions.CpfHashingErrorException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Component
 public class CpfHasherImpl implements CpfHasher {
 
     private final String secret;
