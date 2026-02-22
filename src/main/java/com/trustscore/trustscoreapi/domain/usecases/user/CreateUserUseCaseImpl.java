@@ -9,6 +9,8 @@ import com.trustscore.trustscoreapi.domain.gateway.UserGateway;
 import com.trustscore.trustscoreapi.domain.utils.CpfHasher;
 import com.trustscore.trustscoreapi.domain.utils.PasswordHasher;
 import com.trustscore.trustscoreapi.domain.valueobjects.Cpf;
+import com.trustscore.trustscoreapi.domain.valueobjects.HashedPassword;
+import com.trustscore.trustscoreapi.domain.valueobjects.RawPassword;
 
 import java.time.Instant;
 
@@ -31,7 +33,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
             throw new InvalidCpfException();
         }
 
-        if (gateway.existsByEmail(user.getEmail())) {
+        if (gateway.existsByEmail(user.getEmail().value())) {
             throw new EmailAlreadyExistsException();
         }
 
@@ -41,7 +43,9 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
             throw new CpfAlreadyExistsException();
         }
 
-        String passwordHash = passwordHasher.hash(user.getPassword());
+        RawPassword rawPassword = new RawPassword(user.getPassword().value());
+        String hash = passwordHasher.hash(rawPassword);
+        HashedPassword hashedPassword = new HashedPassword(hash);
 
         String firstCpfDigits = user.getCpf().value().substring(0, 3);
 
@@ -51,7 +55,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
                 user.getEmail(),
                 cpfHash,
                 firstCpfDigits,
-                passwordHash,
+                hashedPassword,
                 false,
                 null,
                 user.getProfilePicture(),

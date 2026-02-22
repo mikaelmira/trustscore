@@ -25,7 +25,7 @@ public class UserController {
     public ResponseEntity<CreateUserResponseDTO> createUser(@RequestBody CreateUserRequestDTO dto) {
         User user = mapper.toDomain(dto);
         User createdUser = createUserUseCase.execute(user);
-        CreateUserResponseDTO response = new CreateUserResponseDTO(createdUser.getName(), createdUser.getEmail());
+        CreateUserResponseDTO response = new CreateUserResponseDTO(createdUser.getName(), createdUser.getEmail().value());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

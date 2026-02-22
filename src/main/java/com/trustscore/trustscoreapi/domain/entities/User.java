@@ -2,6 +2,8 @@ package com.trustscore.trustscoreapi.domain.entities;
 
 import com.trustscore.trustscoreapi.domain.enums.UserStatus;
 import com.trustscore.trustscoreapi.domain.valueobjects.Cpf;
+import com.trustscore.trustscoreapi.domain.valueobjects.Email;
+import com.trustscore.trustscoreapi.domain.valueobjects.HashedPassword;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -15,10 +17,10 @@ public class User {
 
     private Long id;
     private String name;
-    private String email;
+    private Email email;
     private Cpf cpf;
     private String firstCpfDigits;
-    private String password;
+    private HashedPassword password;
     private boolean emailVerified;
     private Instant emailVerifiedAt;
     private String profilePicture;
@@ -39,10 +41,10 @@ public class User {
     public User(
             Long id,
             String name,
-            String email,
+            Email email,
             Cpf cpf,
             String firstCpfDigits,
-            String password,
+            HashedPassword password,
             boolean emailVerified,
             Instant emailVerifiedAt,
             String profilePicture,
@@ -94,11 +96,11 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(Email email) {
         this.email = email;
     }
 
@@ -118,11 +120,11 @@ public class User {
         this.firstCpfDigits = firstCpfDigits;
     }
 
-    public String getPassword() {
+    public HashedPassword getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(HashedPassword password) {
         this.password = password;
     }
 

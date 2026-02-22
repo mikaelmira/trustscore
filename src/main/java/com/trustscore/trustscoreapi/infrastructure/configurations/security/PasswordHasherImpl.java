@@ -1,6 +1,7 @@
 package com.trustscore.trustscoreapi.infrastructure.configurations.security;
 
 import com.trustscore.trustscoreapi.domain.utils.PasswordHasher;
+import com.trustscore.trustscoreapi.domain.valueobjects.RawPassword;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.stereotype.Component;
@@ -21,16 +22,16 @@ public class PasswordHasherImpl implements PasswordHasher {
     }
 
     @Override
-    public String hash(String rawPassword) {
+    public String hash(RawPassword rawPassword) {
         try {
             return argon2.hash(
                     ITERATIONS,
                     MEMORY,
                     PARALLELISM,
-                    rawPassword.toCharArray()
+                    rawPassword.value().toCharArray()
             );
         } finally {
-            argon2.wipeArray(rawPassword.toCharArray());
+            argon2.wipeArray(rawPassword.value().toCharArray());
         }
     }
 
