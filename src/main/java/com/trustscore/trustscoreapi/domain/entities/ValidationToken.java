@@ -3,14 +3,19 @@ package com.trustscore.trustscoreapi.domain.entities;
 import com.trustscore.trustscoreapi.domain.enums.ValidationTokenType;
 import com.trustscore.trustscoreapi.domain.exceptions.ValidationTokenAlreadyUsedException;
 import com.trustscore.trustscoreapi.domain.exceptions.ValidationTokenExpiredException;
+import com.trustscore.trustscoreapi.domain.utils.TokenGenerator;
+import com.trustscore.trustscoreapi.domain.utils.TokenHasher;
+import com.trustscore.trustscoreapi.domain.valueobjects.GeneratedToken;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 public class ValidationToken {
 
     private UUID id;
     private String token;
+    private User user;
     private ValidationTokenType type;
     private Instant expiresAt;
     private boolean used;
@@ -19,11 +24,13 @@ public class ValidationToken {
 
     public ValidationToken(
             String token,
+            User user,
             ValidationTokenType type,
             Instant expiresAt
     ) {
         this.id = null;
         this.token = token;
+        this.user = user;
         this.type = type;
         this.expiresAt = expiresAt;
         this.used = false;
@@ -45,6 +52,14 @@ public class ValidationToken {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public ValidationTokenType getType() {
@@ -102,6 +117,26 @@ public class ValidationToken {
 
     public boolean isExpired(Instant now) {
         return now.isAfter(expiresAt);
+    }
+
+    public static GeneratedToken createEmailValidation(
+            User user,
+            TokenHasher hasher
+    ) {
+        String rawToken = TokenGenerator.generate();
+        String hashed = hasher.hash(rawToken);
+
+        ValidationToken validationToken = new ValidationToken(
+                hashed,
+                user,
+                ValidationTokenType.EMAIL_VALIDATION,
+                Instant.now().plus(24, ChronoUnit.HOURS)
+        );
+
+        return new GeneratedToken(
+                validationToken,
+                rawToken
+        );
     }
 
 }

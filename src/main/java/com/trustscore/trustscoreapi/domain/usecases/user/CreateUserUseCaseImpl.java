@@ -1,14 +1,18 @@
 package com.trustscore.trustscoreapi.domain.usecases.user;
 
 import com.trustscore.trustscoreapi.domain.entities.User;
+import com.trustscore.trustscoreapi.domain.entities.ValidationToken;
 import com.trustscore.trustscoreapi.domain.enums.UserStatus;
 import com.trustscore.trustscoreapi.domain.exceptions.CpfAlreadyExistsException;
 import com.trustscore.trustscoreapi.domain.exceptions.EmailAlreadyExistsException;
 import com.trustscore.trustscoreapi.domain.exceptions.InvalidCpfException;
 import com.trustscore.trustscoreapi.domain.gateway.UserGateway;
+import com.trustscore.trustscoreapi.domain.gateway.ValidationTokenGateway;
 import com.trustscore.trustscoreapi.domain.utils.CpfHasher;
 import com.trustscore.trustscoreapi.domain.utils.PasswordHasher;
+import com.trustscore.trustscoreapi.domain.utils.TokenHasher;
 import com.trustscore.trustscoreapi.domain.valueobjects.Cpf;
+import com.trustscore.trustscoreapi.domain.valueobjects.GeneratedToken;
 import com.trustscore.trustscoreapi.domain.valueobjects.HashedPassword;
 import com.trustscore.trustscoreapi.domain.valueobjects.RawPassword;
 
@@ -16,14 +20,24 @@ import java.time.Instant;
 
 public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
-    private final UserGateway gateway;
+    private final UserGateway userGateway;
+    private final ValidationTokenGateway validationTokenGateway;
     private final PasswordHasher passwordHasher;
     private final CpfHasher cpfHasher;
+    private final TokenHasher tokenHasher;
 
-    public CreateUserUseCaseImpl(UserGateway gateway, PasswordHasher passwordHasher, CpfHasher cpfHasher) {
-        this.gateway = gateway;
+    public CreateUserUseCaseImpl(
+            UserGateway userGateway,
+            ValidationTokenGateway validationTokenGateway,
+            PasswordHasher passwordHasher,
+            CpfHasher cpfHasher,
+            TokenHasher tokenHasher
+    ) {
+        this.userGateway = userGateway;
+        this.validationTokenGateway = validationTokenGateway;
         this.passwordHasher = passwordHasher;
         this.cpfHasher = cpfHasher;
+        this.tokenHasher = tokenHasher;
     }
 
     @Override
@@ -33,13 +47,13 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
             throw new InvalidCpfException();
         }
 
-        if (gateway.existsByEmail(user.getEmail().value())) {
+        if (userGateway.existsByEmail(user.getEmail().value())) {
             throw new EmailAlreadyExistsException();
         }
 
         Cpf cpfHash = cpfHasher.hash(user.getCpf().value());
 
-        if (gateway.existsByCpf(cpfHash.value())) {
+        if (userGateway.existsByCpf(cpfHash.value())) {
             throw new CpfAlreadyExistsException();
         }
 
@@ -71,6 +85,15 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
                 null
         );
 
-        return gateway.createUser(userToBeCreated);
+        User createdUser = userGateway.createUser(userToBeCreated);
+
+        GeneratedToken generatedToken = ValidationToken.createEmailValidation(
+                user,
+                tokenHasher
+        );
+
+        validationTokenGateway.saveValidationToken(generatedToken.validationToken());
+
+        return createdUser;
     }
 }
